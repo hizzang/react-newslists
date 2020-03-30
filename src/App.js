@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useCallback } from 'react';
+import axios from 'axios';
+import NewsList from './NewsLists';
+import Categories from './Components/Categories';
 
-function App() {
+const App = () => {
+  const [category, setCategory] = useState('all');
+  const onSelect = useCallback(category => setCategory(category), []);
+
+  const [data, setData] = useState(null);
+  const onClick = async () => {
+    try {
+      const response = await axios.get('http://newsapi.org/v2/top-headlines?country=kr&apiKey=64ff34566c1e49398b0cf686cc89628f');
+
+      setData(response.data);
+    
+    } catch(e){
+      console.log(e);
+    }
+    
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <Categories category={category} onSelect={onSelect} />
+      <NewsList category={category} />
+    </>
+
+  )
 }
+
 
 export default App;
